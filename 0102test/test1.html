@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片上传预览效果</title>
+</head>
+<style>
+    .main {
+        width: 100vw;
+        height: 300px;
+        border: 1px solid gray;
+        display: flex;
+    }
+
+    .photo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 50px 20px;
+        width: 200px;
+        height: 200px;
+        border: 1px solid gray;
+    }
+
+    .photo-list {
+        display: flex;
+        margin-top: 50px;
+
+    }
+
+    .thumbnail-container {
+        position: relative;
+        margin-left: 20px;
+        width: 200px;
+        height: 200px;
+    }
+
+    /* .thumbnail-container>img {} */
+
+    .delete-btn {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        border: none;
+        color: black;
+        font-size: 16px;
+        padding: 2px 4px;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+</style>
+
+<body>
+    <div class="main">
+        <input type="file" id="fileElem" multiple accept="image/*" style="display:none" />
+        <div class="photo-list"></div>
+        <div class="photo">
+            <img class="fileSelect" style="width: 150px;height: 150px;cursor: pointer;"
+                src="img/solar--add-folder-bold-duotone.png">
+        </div>
+
+
+    </div>
+
+</body>
+<script>
+
+    const fileSelect = document.querySelector(".fileSelect"),
+        fileElem = document.querySelector("#fileElem"),
+        photo = document.querySelector(".photo"),
+        main = document.querySelector(".main");
+
+
+    function addPhoto() {
+        fileSelect.addEventListener(
+            "click",
+            (e) => {
+                if (fileElem) {
+                    fileElem.click();
+                }
+                e.preventDefault(); // 避免导航至“#”
+            },
+            false,
+        );
+
+        fileElem.addEventListener("change", handleFiles, false);
+    }
+    addPhoto();
+
+
+    function handleFiles() {
+        if (!this.files.length) {
+            const p = document.createElement("p");
+            p.textContent = "没有选择任何文件！";
+            photo.appendChild(p);
+        } else {
+
+            var photoList = document.querySelector(".photo-list");
+            var img = new Image(200, 200);
+            img.src = URL.createObjectURL(this.files[0]);
+            img.onload = () => {
+                URL.revokeObjectURL(img.src);
+            };
+            const container = document.createElement('div');
+            container.className = 'thumbnail-container';
+
+            // 创建删除按钮
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = '×'; // 或者使用图标字体，如Font Awesome的'x'
+            deleteBtn.style.display = 'none'; // 默认隐藏
+            container.appendChild(deleteBtn);
+            container.appendChild(img);
+            photoList.appendChild(container);
+            // 绑定鼠标悬停事件
+            bindHoverEvents(container, deleteBtn);
+
+        }
+    }
+
+    function bindHoverEvents(container, deleteBtn) {
+        container.addEventListener('mouseenter', () => {
+            deleteBtn.style.display = 'inline-block'; // 显示删除按钮
+        });
+        container.addEventListener('mouseleave', () => {
+            deleteBtn.style.display = 'none'; // 隐藏删除按钮
+        });
+
+        deleteBtn.addEventListener('click', () => {
+            container.remove(); // 删除缩略图及其容器
+        });
+    }
+</script>
+
+</html>
