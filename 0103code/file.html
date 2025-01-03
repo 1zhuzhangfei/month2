@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+</head>
+<style>
+    .drag {
+        width: 300px;
+        height: 200px;
+        border: 2px dashed orange;
+        border-radius: 20px;
+        text-align: center;
+        line-height: 200px;
+
+    }
+
+    .preview.item {
+        width: 50px;
+        height: 50px;
+    }
+</style>
+
+<body>
+    <div class="drag">
+        拖拽上传
+    </div>
+    <div class="preview">
+
+    </div>
+    <input type="file" multiple>
+</body>
+<script>
+    //File是一种特殊的Blob 只存在于浏览器环境中 一般通过input[type = 'file']和 拖拽api获取
+    //file类型的input框 multiple属性打开后 表示允许一次性选择多个文件
+    //搭配事件来处理 onchange
+    var fileInput = document.querySelector('input[type=file]');
+    fileInput.addEventListener('change', function (e) {
+        console.dir(this.files);
+        if (Array.prototype.every.call(e.target.files, function (file) {
+            return file.type === 'image/jpeg';
+        })) {
+            console.log("准备上传的所有数据都符合要求");
+        } else {
+            alert("准备上传的数据中有不符合要求的数据");
+        }
+    })
+
+    var zone = document.querySelector(".drag");
+    var preview = document.querySelector(".preview");
+
+
+    //创建img标签
+    function createImage(src, props) {
+        return new Promise(function (resolve, reject) {
+            var img = new Image(50,50);
+            img.src = src;
+            for (var key in props) {
+                img[key] = props[key];
+            }
+            img.onload = function () {
+                resolve(img);
+            }
+            img.onerror = function (e) {
+                reject(e);
+            }
+        })
+
+    }
+
+    zone.addEventListener('dragover', function (e) {
+        console.log("dragover");
+        e.preventDefault();
+    });
+    zone.addEventListener('drop', function (e) {
+        console.log(e);
+        e.preventDefault();
+        var files = e.dataTransfer.files;
+        Array.prototype.forEach.call(files, function (file) {
+            var src = URL.createObjectURL(file);
+            createImage(src, { className: 'item' }).then(function (img) {
+                preview.appendChild(img);
+                URL.revokeObjectURL(src);
+            }).catch(function (e) {
+                console.log("错误：" + e);
+
+            })
+        })
+    });
+
+</script>
+
+</html>

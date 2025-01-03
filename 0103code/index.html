@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <iframe src=""></iframe>
+    <!-- <a class="download" href="" download="blob.html">下载</a> -->
+    <button class="download">下载</button>
+</body>
+<script>
+    // var blob = new Blob(["hello,word!"],{type:'text/plain'});
+    // var blob = new Blob(["<h1>blob</h1>"], { type: 'text/html' });
+    // var blobUrl = URL.createObjectURL(blob);
+    // var iframe = document.querySelector('iframe');
+    // var a = document.querySelector(".download");
+    // a.href = blobUrl;
+    // iframe.src = blobUrl;
+
+    //前端下载二进制数据为文件
+    var blob1 = new Blob(['var a =1;\nvar b = 2;\nconsole.log(a+b);\n'], { type: 'text/javascript' });
+    //
+    var blobChunk = blob1.slice(0, 3, "text/plain");
+    blobChunk.text().then(function (res) {
+        console.log(res);
+    }).catch(function (err) {
+        console.log(err);
+    })
+
+    var button = document.querySelector(".download");
+    button.addEventListener("click", function () {
+        var elementA = document.createElement('a');
+        elementA.href = URL.createObjectURL(blob1);
+        elementA.download = 'index.js';
+        elementA.click();
+    })
+
+    
+
+
+
+</script>
+
+</html>

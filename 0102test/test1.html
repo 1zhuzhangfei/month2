@@ -10,7 +10,7 @@
     .main {
         width: 100vw;
         height: 300px;
-        border: 1px solid gray;
+        border: 1px solid #d9d9d9;
         display: flex;
     }
 
@@ -21,7 +21,13 @@
         margin: 50px 20px;
         width: 200px;
         height: 200px;
-        border: 1px solid gray;
+        border: 1px dashed #d9d9d9;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .photo:hover {
+        border-color: #409EFF;
     }
 
     .photo-list {
@@ -31,24 +37,47 @@
     }
 
     .thumbnail-container {
+        display: flex;
         position: relative;
         margin-left: 20px;
         width: 200px;
         height: 200px;
+        border-radius: 5px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .thumbnail-container::before {
+        content: "";
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        border-radius: 5px;
+        background-color: black;
+        opacity: 0;
+    }
+
+    .thumbnail-container:hover::before {
+        opacity: 0.5;
+    }
+
+    img {
+        border-radius: 5px;
     }
 
     /* .thumbnail-container>img {} */
 
-    .delete-btn {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        border: none;
-        color: black;
-        font-size: 16px;
-        padding: 2px 4px;
+    .delete {
+
         cursor: pointer;
-        border-radius: 50%;
+    }
+
+    .delete-btn {
+        display: flex;
+        position: absolute;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
     }
 </style>
 
@@ -57,8 +86,7 @@
         <input type="file" id="fileElem" multiple accept="image/*" style="display:none" />
         <div class="photo-list"></div>
         <div class="photo">
-            <img class="fileSelect" style="width: 150px;height: 150px;cursor: pointer;"
-                src="img/solar--add-folder-bold-duotone.png">
+            <img class="fileSelect" style="width: 150px;height: 150px;cursor: pointer;" src="img/si--add-fill.png">
         </div>
 
 
@@ -74,7 +102,7 @@
 
 
     function addPhoto() {
-        fileSelect.addEventListener(
+        photo.addEventListener(
             "click",
             (e) => {
                 if (fileElem) {
@@ -107,13 +135,31 @@
             container.className = 'thumbnail-container';
 
             // 创建删除按钮
-            const deleteBtn = document.createElement('button');
+            // const deleteBtn = document.createElement('button');
+            // deleteBtn.className = 'delete-btn';
+            // deleteBtn.textContent = '×'; // 或者使用图标字体，如Font Awesome的'x'
+            // deleteBtn.style.display = 'none'; // 默认隐藏
+
+            var deleteBtn = document.createElement("div");
             deleteBtn.className = 'delete-btn';
-            deleteBtn.textContent = '×'; // 或者使用图标字体，如Font Awesome的'x'
             deleteBtn.style.display = 'none'; // 默认隐藏
+            var img1 = new Image(30, 30);
+            var img2 = new Image(30, 30);
+            var img3 = new Image(30, 30);
+            img1.className = 'plus';
+            img2.className = 'download';
+            img3.className = 'delete';
+            img1.src = "img/hugeicons--search-add.png";
+            img2.src = "img/ep--download.png";
+            img3.src = "img/ep--delete.png";
+            deleteBtn.appendChild(img1);
+            deleteBtn.appendChild(img2);
+            deleteBtn.appendChild(img3);
             container.appendChild(deleteBtn);
             container.appendChild(img);
             photoList.appendChild(container);
+
+
             // 绑定鼠标悬停事件
             bindHoverEvents(container, deleteBtn);
 
@@ -122,7 +168,7 @@
 
     function bindHoverEvents(container, deleteBtn) {
         container.addEventListener('mouseenter', () => {
-            deleteBtn.style.display = 'inline-block'; // 显示删除按钮
+            deleteBtn.style.display = 'flex'; // 显示删除按钮
         });
         container.addEventListener('mouseleave', () => {
             deleteBtn.style.display = 'none'; // 隐藏删除按钮

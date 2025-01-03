@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //xhr函数(XmlHttpRequest)构造函数
+        //fetch函数 普通函数
+        //使用XMLHttpRequest构造函数产生的xhr实例发送请求到服务器
+        //1.获取xml实例 XmlHttpRequest
+        //GET POST PUT DELETE PATCH OPTTIONS
+        //open方法需要传入请求方式和请求地址
+        // var xhr = new XMLHttpRequest();
+
+        // xhr.open("GET", "https://netease-cloud-music-api-five-roan-88.vercel.app/search?keywords=olivia");
+
+
+        // xhr.addEventListener('readystatechange', function (e) {
+        //     console.log(e);
+        //     if (e.target.readyState === 4) {
+        //         console.log(JSON.parse(e.target.response));
+        //     }
+
+        // });
+        // xhr.send();
+
+
+        function searchMusic(keywords) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                var url = "https://netease-cloud-music-api-five-roan-88.vercel.app/search?keywords=" + encodeURIComponent(keywords);
+
+                xhr.open("GET", url);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) { // 请求已完成
+                        if (xhr.status === 200) { // 成功响应
+                            try {
+                                resolve(JSON.parse(xhr.responseText));
+                            } catch (e) {
+                                reject('响应失败: ' + e.message);
+                            }
+                        } else {
+                            reject('请求失败: ' + xhr.status);
+                        }
+                    }
+                };
+
+                xhr.onerror = function () {
+                    reject('Network error');
+                };
+
+                xhr.send();
+            });
+        }
+
+        searchMusic('olivia')
+            .then(function (response) {
+                console.log('搜索结果:', response);
+            })
+            .catch(function (error) {
+                console.error('搜索错误:', error);
+            });
+
+
+        // xhr.open("GET", "https://netease-cloud-music-api-five-roan-88.vercel.app/captcha/sent?phone=17671429412");
+        // xhr.addEventListener('readystatechange', function (e) {
+        //     console.log(e);
+        //     if (e.target.readyState === 4) {
+        //         console.log(JSON.parse(e.target.response));
+        //     }
+
+        // });
+
+        /*
+        1.实例化xmlHttpRequest对象
+        2.注册readystatechange事件，并提供回调函数 当readystate === 4的时候 就可以获取响应数据
+        3.注册error事件，并提供请求失败的回调函数
+        4.注册timeout事件，并提供请求超时的回调函数
+        5.调用open方法 分别传入请求方式(GET POST) 还有请求地址(域名：端口/路径?参数)
+        6.调用send方法 正式发送请求
+        */
+    </script>
+</body>
+
+
+</html>
